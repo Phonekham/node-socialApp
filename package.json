@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon app.js"
+    "dev": "nodemon db.js"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +12,7 @@
   "dependencies": {
     "ejs": "^2.7.1",
     "express": "^4.17.1",
+    "mongodb": "^3.3.3",
     "validator": "^11.1.0"
   },
   "devDependencies": {
