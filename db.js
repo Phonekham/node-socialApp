@@ -1,14 +1,14 @@
 const mongodb = require("mongodb");
+const dotenv = require("dotenv");
+dotenv.config();
 
-const connectionString =
-  "mongodb+srv://phone:99491232@cluster0-jcjyk.mongodb.net/node-social?retryWrites=true&w=majority";
 mongodb.connect(
-  connectionString,
+  process.env.CONNECTIONSTRING,
   { useNewUrlParser: true, useUnifiedTopology: true },
   function(err, client) {
     module.exports = client.db();
     const app = require("./app");
-    app.listen(3000, () => {
+    app.listen(process.env.PORT, () => {
       console.log("DB Connected");
     });
   }
