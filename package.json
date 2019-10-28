@@ -17,6 +17,7 @@
     "ejs": "^2.7.1",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
+    "md5": "^2.2.1",
     "mongodb": "^3.3.3",
     "validator": "^11.1.0"
   },

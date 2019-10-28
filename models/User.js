@@ -1,4 +1,6 @@
 const bcrypt = require("bcryptjs");
+const md5 = require("md5");
+
 const usersCollection = require("../db")
   .db()
   .collection("users");
@@ -85,6 +87,8 @@ User.prototype.login = function() {
           attemptedUser &&
           bcrypt.compareSync(this.data.password, attemptedUser.password)
         ) {
+          this.data = attemptedUser;
+          this.getAvatar();
           resolve("congrats");
         } else {
           reject("invalid username or password");
@@ -107,12 +111,17 @@ User.prototype.register = function() {
       let salt = bcrypt.genSaltSync(10);
       this.data.password = bcrypt.hashSync(this.data.password, salt);
       await usersCollection.insertOne(this.data);
+      this.getAvatar();
       resolve();
     } else {
       reject(this.errors);
     }
     // Then save the user into a database
   });
+};
+
+User.prototype.getAvatar = function() {
+  this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128`;
 };
 
 module.exports = User;
