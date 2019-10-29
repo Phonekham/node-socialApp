@@ -22,4 +22,11 @@ router.post(
 );
 router.get("/post/:id", postController.viewSingle);
 
+// Profile
+router.get(
+  "/profile/:username",
+  userController.ifUserExists,
+  userController.profilePostsScreen
+);
+
 module.exports = router;
