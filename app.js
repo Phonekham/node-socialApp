@@ -15,6 +15,9 @@ let sessionOptions = session({
 app.use(sessionOptions);
 app.use(flash());
 app.use(function(req, res, next) {
+  // make all errors and success flash message available from all templates
+  res.locals.errors = req.flash("errors");
+  res.locals.success = req.flash("success");
   // make user session data available from within view template
   if (req.session.user) {
     req.visitorId = req.session.user._id;
