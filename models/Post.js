@@ -79,7 +79,7 @@ Post.reuseablePostQuery = function(uniqueOperations, visitorId) {
     let posts = await postsCollection.aggregate(aggOperations).toArray();
     // Cleanup author property in each post object
     posts = posts.map(function(post) {
-      post.visitorOwner = post.authorId.equals(visitorId);
+      post.isVisitorOwner = post.authorId.equals(visitorId);
       post.author = {
         username: post.author.username,
         avatar: new User(post.author, true).avatar
