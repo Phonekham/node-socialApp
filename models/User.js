@@ -6,9 +6,11 @@ const usersCollection = require("../db")
   .collection("users");
 const validator = require("validator");
 
-const User = function(data) {
+const User = function(data, getAvatar) {
   this.data = data;
   this.errors = [];
+  if (getAvatar == undefined) getAvatar = false;
+  if (getAvatar) this.getAvatar();
 };
 
 User.prototype.cleanUp = function() {
