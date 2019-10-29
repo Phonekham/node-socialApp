@@ -41,10 +41,9 @@ Post.prototype.create = function() {
       // save post into database
       postsCollection
         .insertOne(this.data)
-        .then(() => {
-          console.log(this.data);
-
-          resolve();
+        .then(info => {
+          // console.log(this.data);
+          resolve(info.ops[0]._id);
         })
         .catch(() => {
           this.errors.push("Please try again later.");
@@ -91,36 +90,40 @@ Post.prototype.actuallyUpdate = function() {
 
 Post.reuseablePostQuery = function(uniqueOperations, visitorId) {
   return new Promise(async function(resolve, reject) {
-    let aggOperations = uniqueOperations.concat([
-      {
-        $lookup: {
-          from: "users",
-          localField: "author",
-          foreignField: "_id",
-          as: "authorDocument"
+    try {
+      let aggOperations = uniqueOperations.concat([
+        {
+          $lookup: {
+            from: "users",
+            localField: "author",
+            foreignField: "_id",
+            as: "authorDocument"
+          }
+        },
+        {
+          $project: {
+            title: 1,
+            body: 1,
+            createdDate: 1,
+            authorId: "$author",
+            author: { $arrayElemAt: ["$authorDocument", 0] }
+          }
         }
-      },
-      {
-        $project: {
-          title: 1,
-          body: 1,
-          createdDate: 1,
-          authorId: "$author",
-          author: { $arrayElemAt: ["$authorDocument", 0] }
-        }
-      }
-    ]);
-    let posts = await postsCollection.aggregate(aggOperations).toArray();
-    // Cleanup author property in each post object
-    posts = posts.map(function(post) {
-      post.isVisitorOwner = post.authorId.equals(visitorId);
-      post.author = {
-        username: post.author.username,
-        avatar: new User(post.author, true).avatar
-      };
-      return post;
-    });
-    resolve(posts);
+      ]);
+      let posts = await postsCollection.aggregate(aggOperations).toArray();
+      // Cleanup author property in each post object
+      posts = posts.map(function(post) {
+        post.isVisitorOwner = post.authorId.equals(visitorId);
+        post.author = {
+          username: post.author.username,
+          avatar: new User(post.author, true).avatar
+        };
+        return post;
+      });
+      resolve(posts);
+    } catch (err) {
+      reject(err);
+    }
   });
 };
 
