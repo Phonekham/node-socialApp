@@ -70,7 +70,8 @@ export default class Search {
                     }</strong>
                 <span class="text-muted small">by ${
                   post.author.username
-                } on ${postDate.getMonth()}/${postDate.getDate()}/${postDate.getFullYear()}</span>
+                } on ${postDate.getMonth() +
+                      1}/${postDate.getDate()}/${postDate.getFullYear()}</span>
                 </a>`;
                   })
                   .join("")}
