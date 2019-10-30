@@ -27,7 +27,7 @@ Post.prototype.cleanUp = function() {
       allowedAttributes: {}
     }),
     createdDate: new Date(),
-    author: ObjectID(this.userid)
+    author: ObjectID(this.userId)
   };
 };
 
@@ -158,6 +158,22 @@ Post.findByAuthorId = function(authorId) {
     { $match: { author: authorId } },
     { $sort: { createdDate: -1 } }
   ]);
+};
+
+Post.delete = function(postIdToDelete, currentUserId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let post = await Post.findSingleById(postIdToDelete, currentUserId);
+      if (post.isVisitorOwner) {
+        await postsCollection.deleteOne({ _id: new ObjectID(postIdToDelete) });
+        resolve();
+      } else {
+        reject();
+      }
+    } catch {
+      reject();
+    }
+  });
 };
 
 module.exports = Post;

@@ -72,3 +72,17 @@ exports.edit = function(req, res) {
       });
     });
 };
+
+exports.delete = function(req, res) {
+  Post.delete(req.params.id, req.visitorId)
+    .then(() => {
+      req.flash("success", "post deleted successfully");
+      req.session.save(() => {
+        res.redirect(`/profile/${req.session.user.username}`);
+      });
+    })
+    .catch(() => {
+      req.flash("errors", "don't have permission to perform");
+      req.session.save(() => res.redirect("/"));
+    });
+};

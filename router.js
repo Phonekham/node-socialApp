@@ -23,6 +23,11 @@ router.post(
 router.get("/post/:id", postController.viewSingle);
 router.get("/post/:id/edit", postController.viewEditScreen);
 router.post("/post/:id/edit", postController.edit);
+router.post(
+  "/post/:id/delete",
+  userController.mustBeLoggedIn,
+  postController.delete
+);
 
 // Profile
 router.get(
