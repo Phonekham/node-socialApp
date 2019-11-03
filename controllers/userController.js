@@ -1,5 +1,21 @@
 const User = require("../models/User");
 const Post = require("../models/Post");
+const Follow = require("../models/Follow");
+
+exports.sharedProfileData = async function(req, res, next) {
+  let isVisitorProfile = false;
+  let isFollowing = false;
+  if (req.session.user) {
+    isVisitorProfile = req.profileUser._id.equals(req.session.user._id);
+    isFollowing = await Follow.isVisitorFollowing(
+      req.profileUser._id,
+      req.visitorId
+    );
+  }
+  req.isVisitorProfile = isVisitorProfile;
+  req.isFollowing = isFollowing;
+  next();
+};
 
 exports.mustBeLoggedIn = function(req, res, next) {
   if (req.session.user) {
@@ -93,7 +109,9 @@ exports.profilePostsScreen = function(req, res) {
       res.render("profile", {
         posts: posts,
         profileUsername: req.profileUser.username,
-        profileAvatar: req.profileUser.avatar
+        profileAvatar: req.profileUser.avatar,
+        isFollowing: req.isFollowing,
+        isVisitorProfile: req.isVisitorProfile
       });
     })
     .catch(function() {
