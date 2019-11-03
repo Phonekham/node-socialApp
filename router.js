@@ -44,6 +44,12 @@ router.get(
   userController.sharedProfileData,
   userController.profileFollowsersScreen
 );
+router.get(
+  "/profile/:username/following",
+  userController.ifUserExists,
+  userController.sharedProfileData,
+  userController.profileFollowingScreen
+);
 
 // Follow
 router.post(
