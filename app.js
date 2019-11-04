@@ -58,9 +58,16 @@ io.use(function(socket, next) {
 io.on("connection", function(socket) {
   if (socket.request.session.user) {
     let user = socket.request.session.user;
+    socket.emit("welcome", {
+      username: user.username,
+      avatar: user.avatar
+    });
     socket.on("chatMessageFromBrowser", function(data) {
-      io.emit("chatMessageFromServer", {
-        message: data.message,
+      socket.broadcast.emit("chatMessageFromServer", {
+        message: sanitizeHTML(data.message, {
+          allowedTags: [],
+          allowedAttributes: {}
+        }),
         username: user.username,
         avatar: user.avatar
       });
